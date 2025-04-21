@@ -25,9 +25,17 @@ const statusMap: Record<
 };
 
 const TicketStatusBadge = ({ status }: TicketStatusBadgeProps) => {
+  const mappedStatus = statusMap[status];
+
+  if (!mappedStatus) {
+    return null; // or return a fallback badge if you prefer
+  }
+
   return (
-    <Badge className={`${statusMap[status].color} text-background hover:${statusMap[status].color}`}>
-      {statusMap[status].label}
+    <Badge
+      className={`${mappedStatus.color} text-background hover:${mappedStatus.color}`}
+    >
+      {mappedStatus.label}
     </Badge>
   );
 };

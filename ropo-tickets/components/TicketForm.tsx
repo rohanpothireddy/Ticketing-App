@@ -1,13 +1,14 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { ticketSchema } from "@/ValidationSchemas/ticket";
-import { z } from "zod";
+import { set, z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
+import axios from "axios";
 import {
   Select,
   SelectItem,
@@ -15,16 +16,36 @@ import {
   SelectContent,
   SelectValue,
 } from "./ui/select";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 type TicketFormData = z.infer<typeof ticketSchema>;
 
 const TicketForm = () => {
-  async function onSubmit(values: z.infer<typeof ticketSchema>) {
-    console.log(values);
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("false");
+  const router = useRouter();
   const form = useForm<TicketFormData>({
     resolver: zodResolver(ticketSchema),
   });
+
+  async function onSubmit(values: z.infer<typeof ticketSchema>) {
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      await axios.post("/api/tickets", values);
+      setIsSubmitting(false);
+
+      router.push("/tickets");
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+      setError("Unknown Error Occurred");
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <div className="rounded-md border w-full p-4">
       <Form {...form}>
@@ -45,7 +66,7 @@ const TicketForm = () => {
             )}
           />
           <Controller
-            name="descrtiption"
+            name="description" 
             control={form.control}
             render={({ field }) => (
               <SimpleMDE placeholder="description" {...field} />
@@ -102,6 +123,10 @@ const TicketForm = () => {
               )}
             />
           </div>
+
+          <Button type="submit" disabled={isSubmitting} className="rounded-md">
+            Submit
+          </Button>
         </form>
       </Form>
     </div>
