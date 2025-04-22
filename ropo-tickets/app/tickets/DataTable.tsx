@@ -27,7 +27,8 @@ const DataTable = ({ tickets }: DataTableProps) => {
                 <div className="flex justify-center">Status</div>
               </TableHead>
               <TableHead>
-                <div className="flex justify-center">Priority</div></TableHead>
+                <div className="flex justify-center">Priority</div>
+              </TableHead>
               <TableHead>Created At</TableHead>
             </TableRow>
           </TableHeader>
@@ -39,7 +40,7 @@ const DataTable = ({ tickets }: DataTableProps) => {
                     <TableCell>{ticket.title}</TableCell>
                     <TableCell>
                       <div className="flex justify-center">
-                        <TicketStatusBadge status={ticket.stats} />
+                        <TicketStatusBadge status={ticket.status} />
                       </div>
                     </TableCell>
                     <TableCell>
