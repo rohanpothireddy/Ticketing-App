@@ -17,6 +17,8 @@ const Tickets = async ({ searchParams }: { searchParams: SearchParams }) => {
   const pageSize = 10;
   const page = parseInt(searchParams.page) || 1;
 
+  const orderBy = searchParams.orderBy ? searchParams.orderBy : "createdAt";
+
   const statuses = Object.values(Status);
 
   const status = statuses.includes(searchParams.status)
@@ -36,6 +38,9 @@ const Tickets = async ({ searchParams }: { searchParams: SearchParams }) => {
   const ticketCount = await prisma.ticket.count({ where });
   const tickets = await prisma.ticket.findMany({
     where,
+    orderBy : {
+      [orderBy]: "desc",
+    },
     take: pageSize,
     skip: (page - 1) * pageSize,
   });
